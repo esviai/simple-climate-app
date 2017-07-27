@@ -10,27 +10,36 @@ export default class App extends React.Component {
         "Tokyo",
         "London",
       ],
-      selectedCity: '',
+      selectedCity: 'Jakarta',
       fiveDaysWeather: [],
       averageTempAndVariance: {},
+      isRetrievingDataError: false,
     }
+    this.handleSelectCity = this.handleSelectCity.bind(this)
   }
 
   componentDidMount() {
     this.getWeather("Jakarta")
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.selectedCity !== this.state.selectedCity) {
+      this.getWeather(this.state.selectedCity)
+    }
+  }
+
   getWeather(city) {
-    Axios.get(`http://api.openweathermap.org/data/2.5/forecast/daily?q=Jakarta&mode=json&units=metric&cnt=5&APPID=481e3bc28e5264e5607c2b65b449bfc1`)
+    Axios.get(`http://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&mode=json&units=metric&cnt=5&APPID=481e3bc28e5264e5607c2b65b449bfc1`)
       .then((response) => {
-        console.log(response.data)
         this.setState({
-          fiveDaysWeather: [...response.data.list]
+          fiveDaysWeather: [...response.data.list],
         })
         this.averageTemperatureAndVariance([...response.data.list])
       })
       .catch((error) => {
-        console.log('error', error)
+        this.setState({
+          isRetrievingWeatherError: true,
+        })
       })
   }
 
@@ -50,7 +59,13 @@ export default class App extends React.Component {
     })
     let averageData = {temp: `${parseInt(sumData.temp/data.length, 10)} C`, variance: `${(sumData.variance/data.length).toFixed(2)} C`}
     this.setState({
-      averageTempAndVariance: {...averageData}
+      averageTempAndVariance: {...averageData},
+    })
+  }
+
+  handleSelectCity(event) {
+    this.setState({
+      selectedCity: event.target.value,
     })
   }
 
@@ -72,44 +87,56 @@ export default class App extends React.Component {
             <label className="label">City: </label>
             <div className="control">
               <div className="select">
-                <select>
-                {this.state.cities.map((city, index) => {
-                  return (
-                      <option key={index}>{city}</option>
-                  )
-                })}
-              </select>
+                <select value={this.state.selectedCity} onChange={this.handleSelectCity}>
+                  {this.state.cities.map((city, index) => {
+                    return (
+                      <option
+                        key={index}
+                        value={city}
+                      >
+                        {city}
+                      </option>
+                    )
+                  })}
+                </select>
               </div>
             </div>
           </div>
           <br />
-          <div className="column is-half is-offset-one-quarter">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Jakarta</th>
-                  <th>Temperature</th>
-                  <th>Variance</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.fiveDaysWeather.map((weather, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>{this.parseDate(weather.dt)}</td>
-                      <td>{`${parseInt(weather.temp.day, 10)} C`}</td>
-                      <td>{`${(weather.temp.max-weather.temp.min).toFixed(2)} C`}</td>
-                    </tr>
-                  )
-                })}
-                <tr>
-                  <td><strong>Average</strong></td>
-                  <td>{this.state.averageTempAndVariance.temp}</td>
-                  <td>{this.state.averageTempAndVariance.variance}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          { this.state.isRetrievingDataError ? (
+            <div className="column is-half is-offset-one-quarter">
+              <p className="subtitle">Sorry, we are currently unable to retrieve data</p>
+            </div>
+          ) : (
+            <div className="column is-half is-offset-one-quarter">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>{this.state.selectedCity}</th>
+                    <th>Temperature</th>
+                    <th>Variance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.fiveDaysWeather.map((weather, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{this.parseDate(weather.dt)}</td>
+                        <td>{`${parseInt(weather.temp.day, 10)} C`}</td>
+                        <td>{`${(weather.temp.max-weather.temp.min).toFixed(2)} C`}</td>
+                      </tr>
+                    )
+                  })}
+                  <tr>
+                    <td><strong>Average</strong></td>
+                    <td>{this.state.averageTempAndVariance.temp}</td>
+                    <td>{this.state.averageTempAndVariance.variance}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )
+          }
         </div>
       </div>
     )
