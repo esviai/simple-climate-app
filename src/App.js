@@ -56,26 +56,6 @@ export default class App extends React.Component {
                   <td></td>
                 </tr>
                 <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
                   <td>Average</td>
                   <td></td>
                   <td></td>
