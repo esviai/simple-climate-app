@@ -14,7 +14,8 @@
     "jsdom": "^11.1.0",
     "react-addons-test-utils": "^15.6.0",
     "react-scripts": "1.0.10",
-    "react-test-renderer": "^15.6.1"
+    "react-test-renderer": "^15.6.1",
+    "sinon": "^2.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
