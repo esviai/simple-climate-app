@@ -45,4 +45,16 @@ STATE TEST
     expect(citiesState).toHaveLength(3)
   })
 
+/*
+==================================================================
+EVENT TEST
+==================================================================
+*/
+
+  it('gets weather array from openweathermap API', () => {
+    appWrapper.instance().componentDidMount()
+    const fiveDaysWeatherState = appWrapper.state('fiveDaysWeather')
+    expect(fiveDaysWeatherState).toHaveLength(5)
+  })
+
 })

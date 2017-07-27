@@ -12,6 +12,7 @@ export default class App extends React.Component {
       ],
       selectedCity: '',
       fiveDaysWeather: [],
+      averageTempAndVariance: {},
     }
   }
 
@@ -20,12 +21,13 @@ export default class App extends React.Component {
   }
 
   getWeather(city) {
-    Axios.get(`http://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&mode=json&units=metric&cnt=5&APPID=481e3bc28e5264e5607c2b65b449bfc1`)
+    Axios.get(`http://api.openweathermap.org/data/2.5/forecast/daily?q=Jakarta&mode=json&units=metric&cnt=5&APPID=481e3bc28e5264e5607c2b65b449bfc1`)
       .then((response) => {
-        console.log(response.data.list)
+        console.log(response.data)
         this.setState({
-          fiveDaysWeather: response.data.list
+          fiveDaysWeather: [...response.data.list]
         })
+        this.averageTemperatureAndVariance([...response.data.list])
       })
       .catch((error) => {
         console.log('error', error)
@@ -38,6 +40,18 @@ export default class App extends React.Component {
     let month = (convertedDate.getMonth() + 1) < 10 ? `0${convertedDate.getMonth()+1}` : convertedDate.getMonth()+1
     let dDate = convertedDate.getDate()
     return `${year}-${month}-${dDate}`
+  }
+
+  averageTemperatureAndVariance(data) {
+    let sumData = {temp: 0, variance: 0}
+    data.map((datum) => {
+      sumData["temp"] += datum.temp.day
+      sumData["variance"] += (datum.temp.max - datum.temp.min)
+    })
+    let averageData = {temp: `${parseInt(sumData.temp/data.length, 10)} C`, variance: `${(sumData.variance/data.length).toFixed(2)} C`}
+    this.setState({
+      averageTempAndVariance: {...averageData}
+    })
   }
 
   render() {
@@ -83,15 +97,15 @@ export default class App extends React.Component {
                   return (
                     <tr key={index}>
                       <td>{this.parseDate(weather.dt)}</td>
-                      <td>{`${parseInt(weather.temp.day)} C`}</td>
+                      <td>{`${parseInt(weather.temp.day, 10)} C`}</td>
                       <td>{`${(weather.temp.max-weather.temp.min).toFixed(2)} C`}</td>
                     </tr>
                   )
                 })}
                 <tr>
                   <td><strong>Average</strong></td>
-                  <td></td>
-                  <td></td>
+                  <td>{this.state.averageTempAndVariance.temp}</td>
+                  <td>{this.state.averageTempAndVariance.variance}</td>
                 </tr>
               </tbody>
             </table>
