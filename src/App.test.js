@@ -29,7 +29,7 @@ Shallow testing main parts that should exist in the app
     expect(appForm).toHaveLength(1)
   })
 
-  it('renders a table', () => {
+  it('renders a <table>', () => {
     const appTable = appWrapper.find('table')
     expect(appTable).toHaveLength(1)
   })
