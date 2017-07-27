@@ -33,5 +33,17 @@ Shallow testing main parts that should exist in the app
     const appTable = appWrapper.find('table')
     expect(appTable).toHaveLength(1)
   })
+
+/*
+==================================================================
+STATE TEST
+==================================================================
+*/
+
+  it('has cities state which consists of three items', () => {
+    const citiesState = appWrapper.state('cities')
+    expect(citiesState).toHaveLength(3)
+  })
+
 })
 

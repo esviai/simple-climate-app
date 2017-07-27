@@ -1,6 +1,16 @@
 import React from 'react'
 
 export default class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      cities: [
+        "Jakarta",
+        "Tokyo",
+        "London",
+      ],
+    }
+  }
   render() {
     return (
       <div className="App">
@@ -20,9 +30,12 @@ export default class App extends React.Component {
             <div className="control">
               <div className="select">
                 <select>
-                  <option>Select dropdown</option>
-                  <option>With options</option>
-                </select>
+                {this.state.cities.map((city, index) => {
+                  return (
+                      <option key={index}>{city}</option>
+                  )
+                })}
+              </select>
               </div>
             </div>
           </div>
@@ -59,6 +72,11 @@ export default class App extends React.Component {
                 </tr>
                 <tr>
                   <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Average</td>
                   <td></td>
                   <td></td>
                 </tr>
